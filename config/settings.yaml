@@ -1,0 +1,46 @@
+stream:
+  youtube_url: "https://www.youtube.com/watch?v=o1eTLR7Degs"
+  capture_interval_seconds: 4
+  url_refresh_interval_seconds: 1800
+  reconnect_max_backoff_seconds: 300
+  frame_resize_width: 720
+
+model:
+  type: "yolov8n"
+  weights_path: "models/yolov8n.onnx"
+  device: "cpu"
+
+scene_classifier:
+  method: "phash"
+  similarity_threshold: 0.85
+  transition_discard: true
+
+stabilization:
+  window_seconds: 180
+  method: "median"
+
+crowd_weights:
+  parking: 0.30
+  pier: 0.15
+  beach: 0.35
+  water: 0.20
+
+crowd_max_values:
+  parking_cars: 50
+  pier_people: 40
+  beach_people: 80
+  water_people: 25
+
+storage:
+  database: "sqlite"
+  sqlite_path: "data/crowd.db"
+  retention_days: 90
+  aggregation_interval_minutes: 15
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  cache_seconds: 30
+  cors_origins:
+    - "https://vibesurfschool.com"
+    - "http://localhost:3000"

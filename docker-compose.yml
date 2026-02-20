@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config:/app/config
+      - ./data:/app/data
+      - ./calibration:/app/calibration
+      - ./models:/app/models
+    environment:
+      - CONFIG_PATH=/app/config/settings.yaml
+      - SCENES_PATH=/app/config/scenes.yaml
+      - LOG_LEVEL=info
+      - TZ=America/New_York
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+      - NEXT_PUBLIC_YOUTUBE_EMBED_ID=o1eTLR7Degs
+    depends_on:
+      - backend
+    restart: unless-stopped
