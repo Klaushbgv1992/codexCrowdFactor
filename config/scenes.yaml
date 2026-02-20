@@ -1,0 +1,36 @@
+scenes:
+  parking:
+    reference_frames: ["calibration/refs/parking_01.jpg"]
+    detect_classes: ["car", "person"]
+    roi_polygons:
+      cars: [[120,400], [580,400], [620,710], [80,710]]
+    horizon_y: 350
+    car_filters:
+      aspect_ratio_range: [1.0, 4.0]
+      area_range: [800, 25000]
+    confidence_threshold: 0.40
+
+  pier:
+    reference_frames: ["calibration/refs/pier_01.jpg"]
+    detect_classes: ["person"]
+    roi_polygons:
+      people: [[100,200], [600,200], [620,700], [80,700]]
+    confidence_threshold: 0.40
+
+  beach:
+    reference_frames: ["calibration/refs/beach_01.jpg"]
+    detect_classes: ["person"]
+    roi_polygons:
+      people: [[50,300], [700,300], [720,710], [30,710]]
+    confidence_threshold: 0.35
+
+  water:
+    reference_frames: ["calibration/refs/water_01.jpg"]
+    detect_classes: ["person"]
+    roi_polygons:
+      people: [[0,400], [720,400], [720,710], [0,710]]
+    confidence_threshold: 0.30
+
+  skyline:
+    reference_frames: ["calibration/refs/skyline_01.jpg"]
+    skip_detection: true
