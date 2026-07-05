@@ -1,0 +1,33 @@
+name: ytdlp-diag
+on: workflow_dispatch
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: pip install -U yt-dlp
+      - name: probe
+        run: |
+          URL="https://www.youtube.com/watch?v=o1eTLR7Degs"
+          run_test() {
+            NAME="$1"; shift
+            echo "=== TEST: $NAME ==="
+            if yt-dlp -g -f "best[height<=720]" "$@" "$URL" >/tmp/out.txt 2>/tmp/err.txt; then
+              echo "RESULT($NAME): SUCCESS"
+              head -c 120 /tmp/out.txt; echo
+            else
+              echo "RESULT($NAME): FAIL"
+              tail -3 /tmp/err.txt
+            fi
+          }
+          run_test "baseline-deno"
+          run_test "remote-components" --remote-components ejs:github
+          run_test "client-android_vr" --extractor-args "youtube:player_client=android_vr"
+          run_test "client-default-web_embedded" --extractor-args "youtube:player_client=default,web_embedded"
+          run_test "client-tv" --extractor-args "youtube:player_client=tv"
+          run_test "client-web_safari" --extractor-args "youtube:player_client=web_safari"
+          echo "=== VERBOSE baseline (diagnostics) ==="
+          yt-dlp -v -g -f "best[height<=720]" "$URL" 2>&1 | tail -30 || true
