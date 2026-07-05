@@ -1,0 +1,18 @@
+name: thumb-diag
+on: workflow_dispatch
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: probe
+        run: |
+          URL="https://i.ytimg.com/vi/o1eTLR7Degs/maxresdefault_live.jpg"
+          echo "=== HEADERS ==="
+          curl -sI "$URL" | grep -i -E "HTTP|cache|age|last-modified|expires" || true
+          curl -s -o a.jpg -w "first: http=%{http_code} bytes=%{size_download}\n" "$URL"
+          echo "sleeping 150s to test freshness..."
+          sleep 150
+          curl -s -o b.jpg -w "second: http=%{http_code} bytes=%{size_download}\n" "$URL"
+          echo "=== HASHES (different = thumbnail updates within 2.5 min) ==="
+          sha256sum a.jpg b.jpg
